@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .img-preview {
+      width: 1200px;
+      margin: 0 auto;
+    }
+    /*.imh-arr {
+      margin-top: -10px;
+      margin-right: -10px;
+    }*/
+    .img-arr:after {
+      content: '';
+      display: block;
+      clear: both;
+    }
+    .img-preview>.img-ct>.img-arr>img {
+      float: left;
+      margin-top: 10px;
+      margin-right: 10px;
+    }
+    .layout {
+      width: 1200px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+
+  </div>
+  <script src='C:\Users\Administrator\Desktop\JS\jquery-3.2.1.min.js'></script>
+  <script>
+    function Barrels($ct,number){
+      this.$ct = $ct;
+      this.number = number;
+      this.imgArr = [];
+      var arrwidth = 0;
+      this.madeImg(number);
+      
+    }
+    Barrels.prototype = {
+      madeImg: function(number){
+        var imgSrcArr = this.getImgsrc(number);
+        var _this = this
+        for (var i = 0 ; i<number; i++){
+          !function(){
+            var img = new Image();
+            img.src = imgSrcArr[i];
+            img.onload = function(){
+              var aboutImg = {
+                img : img ,
+                height : 200,
+                width : 200*(img.width/img.height)
+              }
+              _this.addArray(aboutImg);
+            }
+          }();
+        }
+      },
+      getImgsrc: function(number){
+        var imgSrcArr = [];
+        for (var i = 0; i<number ;i++){
+          src = 'https://unsplash.it/'+parseInt(Math.random()*100+200)+'/'+parseInt(Math.random()*100+100)+'/?random'
+          imgSrcArr.push(src)
+        }
+        return imgSrcArr;
+      },
+      addArray:function(aboutImg){
+        var clientWidth = this.$ct.width()
+        // var imgArr = [];
+        var arrwidth = 0;
+        this.imgArr.push(aboutImg.img);
+        console.log(this.imgArr)
+        for (var i = 0; i < this.imgArr.length; i++) {
+          arrwidth += this.imgArr[i];
+        }
+        
+        if(arrwidth>clientWidth){
+          arrwidth -=aboutImg.width;
+          this.imgArr.pop();
+          var newRowHeight = 200*(this.$ct.width()/arrwidth)
+          
+          this.displayImg(newRowHeight);
+          this.imgArr = [];
+          this.imgArr.push(aboutImg.img);
+          arrwidth = aboutImg.width;
+        }
+      },
+      displayImg:function(newRowHeight){
+        var $html = $('<div class = "line"></div>');
+        for(var i = 0;i<this.imgArr.length;i++){
+          $(this.imgArr[i]).height(newRowHeight);
+          $html.append($(this.imgArr[i]));
+        }
+        this.$ct.append($html);
+      }
+    }
+     
+    var barrel = new Barrels($('.layout'),10)
+    barrel
+  </script>
+</body>
+</html>
